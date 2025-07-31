@@ -1,6 +1,6 @@
 // Local: src/shared/components/Layout/MainLayout.tsx
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // LINHA CORRIGIDA
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { PageKey } from '../../types';

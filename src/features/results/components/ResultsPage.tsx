@@ -206,11 +206,10 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ selectedJob, candidates, onDa
               {viewMode === 'kanban' && (
                 <button
                   onClick={() => setIsUploadModalOpen(true)}
-                  // Ajustado padding-y para corresponder aos ícones e centralizar melhor
                   className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-md hover:bg-indigo-700 transition-colors bg-indigo-600 text-white" 
                 >
                   <UploadCloud size={18} />
-                  Enviar Currículo {/* TEXTO ALTERADO AQUI */}
+                  Enviar Currículo
                 </button>
               )}
             </div>
@@ -250,13 +249,12 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ selectedJob, candidates, onDa
         />
       )}
       <ScheduleModal isOpen={isScheduleModalOpen} onClose={() => setIsScheduleModalOpen(false)} candidate={candidateToSchedule} onSchedule={handleScheduleSubmit} />
-      {/* NOVO: Renderiza a modal de upload condicionalmente */}
       <UploadModal
         isOpen={isUploadModalOpen}
         onClose={() => {
           setIsUploadModalOpen(false);
-          setUploadSuccessMessage(null); // Limpa mensagens ao fechar
-          setUploadError(null);         // Limpa mensagens ao fechar
+          setUploadSuccessMessage(null);
+          setUploadError(null);
         }}
         onFilesSelected={handleFilesSelected}
         isUploading={isProcessing}

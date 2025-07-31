@@ -1,71 +1,95 @@
 // Local: src/features/agenda/components/CustomToolbar.tsx
 
 import React from 'react';
-import { Navigate, View } from 'react-big-calendar';
+import { Navigate, View, Views } from 'react-big-calendar';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-// A biblioteca nos passa várias props, mas vamos usar apenas as que precisamos
 interface CustomToolbarProps {
   label: string;
   view: View;
   views: View[];
-  onNavigate: (action: Navigate) => void;
+  onNavigate: (action: Navigate, date?: Date) => void;
   onView: (view: View) => void;
+  date: Date;
 }
 
-const CustomToolbar: React.FC<CustomToolbarProps> = ({ label, view, views, onNavigate, onView }) => {
-
-  const navigate = (action: Navigate) => {
-    onNavigate(action);
-  };
+const CustomToolbar: React.FC<CustomToolbarProps> = ({ label, view, views, onNavigate, onView, date }) => {
 
   const viewNames: { [key in View]?: string } = {
     month: 'Mês',
     week: 'Semana',
     day: 'Dia',
-    agenda: 'Agenda',
+  };
+
+  const getRangeLabel = () => {
+    if (view === Views.WEEK) {
+      const startOfWeekDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - getDay(date));
+      const endOfWeekDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - getDay(date) + 6);
+      
+      const startDay = format(startOfWeekDate, 'd');
+      const endDay = format(endOfWeekDate, 'd');
+      const startMonth = format(startOfWeekDate, 'MMM', { locale: ptBR });
+      const endMonth = format(endOfWeekDate, 'MMM', { locale: ptBR });
+
+      if (startMonth === endMonth) {
+        return `${startDay} - ${endDay} ${startMonth}`;
+      } else {
+        return `${startDay} ${startMonth} - ${endDay} ${endMonth}`;
+      }
+    }
+    if (view === Views.DAY) {
+      return format(date, 'EEEE, dd MMM', { locale: ptBR });
+    }
+    return label;
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between p-4 mb-4 bg-white rounded-t-lg border-b border-gray-200">
+    // Adicionado justify-between para espaçar as seções
+    // Adicionado rounded-t-lg para bordas arredondadas no topo
+    <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 rounded-t-lg"> 
       
-      {/* Lado Esquerdo: Navegação e Título */}
-      <div className="flex items-center gap-4 w-full md:w-auto mb-4 md:mb-0">
-        <button
-          type="button"
-          onClick={() => navigate(Navigate.TODAY)}
-          className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-        >
-          Hoje
+      {/* Grupo Esquerdo: Setas de Navegação e Título Dinâmico */}
+      <div className="flex items-center gap-2">
+        <button onClick={() => onNavigate(Navigate.PREVIOUS)} className="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
+          <ChevronLeft size={20} />
         </button>
-        <div className="flex items-center">
-          <button onClick={() => navigate(Navigate.PREVIOUS)} className="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
-            <ChevronLeft size={20} />
-          </button>
-          <button onClick={() => navigate(Navigate.NEXT)} className="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
-            <ChevronRight size={20} />
-          </button>
-        </div>
-        <h2 className="text-xl font-bold text-gray-800 capitalize">
-          {label}
+        <h2 className="text-xl font-bold text-gray-800 capitalize flex-shrink-0 mx-2">
+          {getRangeLabel()}
         </h2>
+        <button onClick={() => onNavigate(Navigate.NEXT)} className="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
+          <ChevronRight size={20} />
+        </button>
       </div>
 
-      {/* Lado Direito: Seleção de Visualização */}
-      <div className="inline-flex items-center bg-gray-100 p-1 rounded-lg">
-        {views.map(viewName => (
-          <button
-            key={viewName}
-            onClick={() => onView(viewName)}
-            className={`px-3 py-1.5 text-sm font-semibold rounded-md transition-colors duration-200 ${
-              view === viewName
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {viewNames[viewName]}
-          </button>
-        ))}
+      {/* Grupo Direito: Botões de Visualização e Botão Hoje */}
+      {/* Aumentado o gap para criar a margem desejada entre as duas seções da toolbar */}
+      {/* Adicionado margin-left para separar do grupo esquerdo */}
+      <div className="flex items-center gap-4 ml-auto"> {/* Usar ml-auto para empurrar para a direita */}
+        {/* Bordas arredondadas de 5px para o grupo de botões de visualização */}
+        <div className="inline-flex items-center bg-gray-100 p-1 rounded-[5px]"> {/* Usado rounded-[5px] para 5px exatos */}
+            {views.filter(v => viewNames[v]).map(viewName => (
+            <button
+                key={viewName}
+                onClick={() => onView(viewName)}
+                className={`px-3 py-1.5 text-sm font-semibold rounded-[5px] transition-colors duration-200 ${
+                view === viewName
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-200'
+                }`}
+            >
+                {viewNames[viewName]}
+            </button>
+            ))}
+        </div>
+        <button
+            type="button"
+            onClick={() => onNavigate(Navigate.TODAY)}
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+        >
+            Hoje
+        </button>
       </div>
     </div>
   );

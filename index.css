@@ -32,22 +32,25 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* --- ESTILOS PERSONALIZADOS PARA O CALENDÁRIO MODERNO --- */
+/* --- ESTILOS PERSONALIZADOS PARA O CALENDÁRIO MODERNO (React Big Calendar) --- */
 
-/* Container geral do calendário - removemos a toolbar daqui */
+/* Container geral do calendário */
 .rbc-calendar {
   border: none;
-  height: 100% !important;
+  height: 100% !important; /* Ajusta a altura para o container pai */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Escondemos a Toolbar padrão, pois criamos a nossa */
+/* Escondemos a Toolbar padrão, pois criamos a nossa (CustomToolbar) */
 .rbc-toolbar {
   display: none;
 }
 
-/* Header dos dias (Dom, Seg, Ter...) - mais limpo */
+/* Header dos dias (Dom, Seg, Ter...) - mais limpo e alinhado ao design de referência */
 .rbc-header {
   @apply text-center p-3 border-b-2 border-gray-100 text-xs font-semibold uppercase text-gray-500;
+  border-right: none !important; /* Remover bordas laterais do cabeçalho */
 }
 
 /* Células dos dias */
@@ -55,14 +58,22 @@ body {
   border: none;
 }
 .rbc-day-bg {
-  border-left: 1px solid #f3f4f6;
+  border-left: 1px solid #f3f4f6; /* Borda vertical mais suave */
+  border-right: none !important; /* Remover bordas verticais que não a esquerda */
 }
 .rbc-day-bg:first-child {
   border-left: none;
 }
 .rbc-month-row {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6; /* Borda horizontal mais suave */
+  border-right: none !important; /* Remover bordas laterais das linhas */
 }
+
+/* Última linha do mês pode precisar de um ajuste se não tiver borda bottom global */
+.rbc-month-view > .rbc-row-content:last-child .rbc-month-row {
+  border-bottom: none; /* Remover a borda inferior da última linha do mês para dar lugar à nossa customizada */
+}
+
 
 /* Número do dia dentro da célula */
 .rbc-date-cell {
@@ -70,9 +81,11 @@ body {
   padding: 8px;
   font-weight: 600;
   color: #6b7280;
+  position: relative; /* Para posicionar eventos */
+  z-index: 1; /* Garante que o número do dia esteja acima do background */
 }
 
-/* Número do dia de hoje - EFEITO DE CÍRCULO */
+/* Número do dia de hoje - EFEITO DE CÍRCULO (se ainda desejar, senão remover) */
 .rbc-day-bg.rbc-today {
   background-color: transparent !important;
 }
@@ -84,13 +97,12 @@ body {
   font-weight: bold;
 }
 
-
 /* Células de dias fora do mês atual */
 .rbc-off-range-bg {
-  background-color: #f9fafb;
+  background-color: #f9fafb; /* Cor de fundo para dias fora do mês */
 }
 .rbc-off-range .rbc-date-cell {
-  color: #d1d5db;
+  color: #d1d5db; /* Cor de texto para dias fora do mês */
   font-weight: normal;
 }
 
@@ -103,6 +115,7 @@ body {
   opacity: 0.95 !important;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
+  z-index: 2; /* Garante que o evento esteja acima do número do dia */
 }
 
 .rbc-event:hover {
@@ -119,31 +132,24 @@ body {
   font-size: 0.75rem;
 }
 
-/* --- ESTILOS PERSONALIZADOS PARA SCROLLBAR --- */
-
-/* Para navegadores baseados em Webkit (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 8px;  /* Largura da scrollbar vertical */
-  height: 8px; /* Altura da scrollbar horizontal */
+/* Ajustes para a grade do calendário em si */
+.rbc-month-view {
+  border-bottom: none !important; /* Remover a borda inferior padrão do rbc-month-view */
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Cor de fundo da trilha da scrollbar */
-  border-radius: 10px;
+/* --- ESTILOS PERSONALIZADOS PARA ESCONDER SCROLLBAR (NOVA CLASSE) --- */
+
+/* Esconde scrollbar para Webkit browsers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Não mostra a barra */
 }
 
-::-webkit-scrollbar-thumb {
-  background: #c3c3c3; /* Cor do "polegar" da scrollbar */
-  border-radius: 10px;
-  border: 2px solid #f1f1f1; /* Borda para fazer o polegar parecer menor */
+/* Esconde scrollbar para Firefox */
+.hide-scrollbar {
+  scrollbar-width: none; /* Não mostra a barra */
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8; /* Cor do polegar ao passar o mouse */
-}
-
-/* Para Firefox (suporte limitado) */
-* {
-  scrollbar-width: thin; /* 'auto' ou 'none' */
-  scrollbar-color: #c3c3c3 #f1f1f1; /* thumb color track color */
+/* Fallback para IE/Edge (se precisar, embora mais moderno Edge seja Webkit) */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* Esconde barra de rolagem do IE/Edge */
 }
