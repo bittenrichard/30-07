@@ -1,0 +1,140 @@
+/* Local: src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animação de fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Classe utilitária para a fonte */
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- ESTILOS PERSONALIZADOS PARA O CALENDÁRIO MODERNO --- */
+
+/* Container geral do calendário - removemos a toolbar daqui */
+.rbc-calendar {
+  border: none;
+  height: 100% !important;
+}
+
+/* Escondemos a Toolbar padrão, pois criamos a nossa */
+.rbc-toolbar {
+  display: none;
+}
+
+/* Header dos dias (Dom, Seg, Ter...) - mais limpo */
+.rbc-header {
+  @apply text-center p-3 border-b-2 border-gray-100 text-xs font-semibold uppercase text-gray-500;
+}
+
+/* Células dos dias */
+.rbc-month-view, .rbc-time-view, .rbc-day-view {
+  border: none;
+}
+.rbc-day-bg {
+  border-left: 1px solid #f3f4f6;
+}
+.rbc-day-bg:first-child {
+  border-left: none;
+}
+.rbc-month-row {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* Número do dia dentro da célula */
+.rbc-date-cell {
+  text-align: right;
+  padding: 8px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* Número do dia de hoje - EFEITO DE CÍRCULO */
+.rbc-day-bg.rbc-today {
+  background-color: transparent !important;
+}
+.rbc-date-cell.rbc-current span {
+  background-color: #4f46e5; /* Cor indigo do projeto */
+  color: white;
+  border-radius: 9999px;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+
+/* Células de dias fora do mês atual */
+.rbc-off-range-bg {
+  background-color: #f9fafb;
+}
+.rbc-off-range .rbc-date-cell {
+  color: #d1d5db;
+  font-weight: normal;
+}
+
+/* Eventos no calendário (cards) */
+.rbc-event {
+  border-radius: 6px !important;
+  padding: 2px 4px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: none !important;
+  opacity: 0.95 !important;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.rbc-event:hover {
+  opacity: 1 !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.rbc-event-label {
+  display: none;
+}
+
+.rbc-event-content {
+  font-size: 0.75rem;
+}
+
+/* --- ESTILOS PERSONALIZADOS PARA ESCONDER SCROLLBAR (NOVA CLASSE) --- */
+
+/* Esconde scrollbar para Webkit browsers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Não mostra a barra */
+}
+
+/* Esconde scrollbar para Firefox */
+.hide-scrollbar {
+  scrollbar-width: none; /* Não mostra a barra */
+}
+
+/* Fallback para IE/Edge (se precisar, embora mais moderno Edge seja Webkit) */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* Esconde barra de rolagem do IE/Edge */
+}
+
+/* REMOVIDO: Estilos anteriores de scrollbar que davam cor */
+/* Se a ideia é esconder, as regras de cor não são mais necessárias aqui. */
